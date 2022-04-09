@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author amoswang
  */
 @SpringBootApplication
-@MapperScan("com.amos.generator.mapper")
+@MapperScan("com.amos.generator.**.mapper")
 public class GeneratorApplication {
 
     public static void main(String[] args) {

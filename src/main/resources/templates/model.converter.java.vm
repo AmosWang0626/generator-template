@@ -1,0 +1,39 @@
+package ${package.Parent}${relativeConverterPkg};
+
+#set($entityName = ${entity})
+#set($modelBaseName = $entityName.replace("DO", ""))
+import ${package.Entity}.${entity};
+import ${package.Parent}${relativeDTOPkg}.${modelBaseName}DTO;
+import ${package.Parent}${relativeVOPkg}.${modelBaseName}VO;
+import org.springframework.cglib.beans.BeanCopier;
+
+/**
+ * $!{table.comment} Converter
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+public class ${modelBaseName}Converter {
+
+    public static ${modelBaseName}DO toDO(${modelBaseName}DTO dto) {
+        ${modelBaseName}DO target = new ${modelBaseName}DO();
+        BeanCopier beanCopier = BeanCopier.create(dto.getClass(), target.getClass(), false);
+        beanCopier.copy(dto, target, null);
+        return target;
+    }
+
+    public static ${modelBaseName}DTO toDTO(${modelBaseName}DO dto) {
+        ${modelBaseName}DTO target = new ${modelBaseName}DTO();
+        BeanCopier beanCopier = BeanCopier.create(dto.getClass(), target.getClass(), false);
+        beanCopier.copy(dto, target, null);
+        return target;
+    }
+
+    public static ${modelBaseName}VO toVO(${modelBaseName}DTO dto) {
+        ${modelBaseName}VO target = new ${modelBaseName}VO();
+        BeanCopier beanCopier = BeanCopier.create(dto.getClass(), target.getClass(), false);
+        beanCopier.copy(dto, target, null);
+        return target;
+    }
+
+}

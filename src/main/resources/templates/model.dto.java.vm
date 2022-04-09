@@ -1,0 +1,43 @@
+package ${package.Parent}${relativeDTOPkg};
+
+#set($entityName = ${entity})
+#set($modelDTOName = $entityName.replace("DO", "DTO"))
+#foreach($pkg in ${importDTOPackages})
+import ${pkg};
+#end
+import ${commonPkg}.model.BaseDTO;
+#if(${entityLombokModel})
+import lombok.Getter;
+import lombok.Setter;
+#end
+
+/**
+ * $!{table.comment} DTO
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#if(${entityLombokModel})
+@Getter
+@Setter
+#end
+public class ${modelDTOName} extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+
+#if("$!field.comment" != "")
+  #if(${swagger})
+    @ApiModelProperty("${field.comment}")
+  #else
+    /**
+     * ${field.comment}
+     */
+  #end
+#end
+    private ${field.propertyType} ${field.propertyName};
+#end
+## ----------  END 字段循环遍历  ----------
+
+}

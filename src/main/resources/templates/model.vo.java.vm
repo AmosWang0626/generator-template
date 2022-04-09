@@ -1,0 +1,43 @@
+package ${package.Parent}${relativeVOPkg};
+
+#set($entityName = ${entity})
+#set($modelVOName = $entityName.replace("DO", "VO"))
+#foreach($pkg in ${importDTOPackages})
+import ${pkg};
+#end
+import ${commonPkg}.model.BaseDTO;
+#if(${entityLombokModel})
+import lombok.Getter;
+import lombok.Setter;
+#end
+
+/**
+ * $!{table.comment} VO
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#if(${entityLombokModel})
+@Getter
+@Setter
+#end
+public class ${modelVOName} extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+
+#if("$!field.comment" != "")
+  #if(${swagger})
+    @ApiModelProperty("${field.comment}")
+  #else
+    /**
+     * ${field.comment}
+     */
+  #end
+#end
+    private ${field.propertyType} ${field.propertyName};
+#end
+## ----------  END 字段循环遍历  ----------
+
+}

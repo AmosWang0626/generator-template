@@ -1,6 +1,6 @@
 package ${package.Controller};
 
-import com.amos.generator.common.model.PageQuery;
+import ${commonPkg}.model.PageQuery;
 import ${package.Entity}.${entity};
 import ${package.Service}.${table.serviceName};
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -17,6 +17,7 @@ import ${superControllerClassPackage};
 #end
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -72,9 +73,12 @@ public class ${table.controllerName} {
         return ${humpServiceName}.updateById(param);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public Boolean removeById(@PathVariable("id") Long id) {
-        return ${humpServiceName}.removeById(id);
+        ${entity} record = new ${entity}();
+        record.setId(id);
+        record.setGmtModified(LocalDateTime.now());
+        return ${humpServiceName}.removeById(record);
     }
 
 }
