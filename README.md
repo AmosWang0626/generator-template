@@ -44,8 +44,8 @@
 > 流水式代码，随便看看～
 
 1. com.amos.generator.BaseGeneratorTests 最基础的生成代码
-2. com.amos.generator.custom.CustomModelTests 加入dto/vo/converter
-3. com.amos.generator.custom.BatchGeneratorTests 根据表名前缀批量生成分包代码
+2. com.amos.generator.CustomGeneratorTests 加入dto/vo/converter
+3. com.amos.generator.BatchGeneratorTests 根据表名前缀批量生成分包代码
 
 ## 写这个模板项目的初衷
 

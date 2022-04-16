@@ -1,6 +1,9 @@
-package com.amos.generator.custom;
+package com.amos.generator;
 
 import com.amos.generator.common.model.BaseDO;
+import com.amos.generator.config.GeneratorConfig;
+import com.amos.generator.custom.CustomTemplateInfo;
+import com.amos.generator.custom.CustomVelocityTemplateEngine;
 import com.amos.generator.custom.batch.BatchGeneratorInfo;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
@@ -19,23 +22,25 @@ public class BatchGeneratorTests {
     /**
      * 初始化
      */
-    private CustomConfig init() {
-        CustomConfig customConfig = new CustomConfig();
+    private GeneratorConfig init() {
+        GeneratorConfig generatorConfig = new GeneratorConfig();
 
         String currentProjectDir = System.getProperty("user.dir");
+        generatorConfig.setJavaOutputDir(currentProjectDir + "/src/main/java");
+        generatorConfig.setMapperXmlOutputDir(currentProjectDir + "/src/main/resources/mapper");
 
-        customConfig.setJavaOutputDir(currentProjectDir + "/src/main/java");
-        customConfig.setMapperXmlOutputDir(currentProjectDir + "/src/main/resources/mapper");
+        generatorConfig.setBasePackage("com.amos.generator.biz");
+        generatorConfig.setCommonPackage("com.amos.generator.common");
 
-        return customConfig;
+        return generatorConfig;
     }
 
     @Test
     public void generate() {
-        CustomConfig customConfig = init();
+        GeneratorConfig generatorConfig = init();
 
         // 全局模板参数
-        Map<String, String> globalCustomParam = getGlobalCustomParam(customConfig);
+        Map<String, String> globalCustomParam = getGlobalCustomParam(generatorConfig);
 
         // 自定义生成文件
         Map<String, CustomTemplateInfo> customTemplateInfoMap = customTemplateInfo();
@@ -43,11 +48,11 @@ public class BatchGeneratorTests {
         List<BatchGeneratorInfo> batchGeneratorInfoList = getBatchGeneratorInfoList();
 
         for (BatchGeneratorInfo batchGeneratorInfo : batchGeneratorInfoList) {
-            FastAutoGenerator.create(customConfig.getDbConfigBuilder())
+            FastAutoGenerator.create(generatorConfig.getDbConfigBuilder())
                     // 全局配置
-                    .globalConfig(builder -> getGlobalBuilder(builder, customConfig))
+                    .globalConfig(builder -> getGlobalBuilder(builder, generatorConfig))
                     // 包配置
-                    .packageConfig(builder -> getPackageBuilder(builder, customConfig, batchGeneratorInfo.getTargetPkg()))
+                    .packageConfig(builder -> getPackageBuilder(builder, generatorConfig, batchGeneratorInfo.getTargetPkg()))
                     // 策略配置
                     .strategyConfig(builder -> getStrategyConfigBuilder(builder, batchGeneratorInfo))
                     // 注入配置
@@ -68,9 +73,9 @@ public class BatchGeneratorTests {
         return batchGeneratorInfoList;
     }
 
-    private Map<String, String> getGlobalCustomParam(CustomConfig customConfig) {
+    private Map<String, String> getGlobalCustomParam(GeneratorConfig generatorConfig) {
         Map<String, String> globalCustomMap = new HashMap<>();
-        globalCustomMap.put("commonPkg", customConfig.getCommonPackage());
+        globalCustomMap.put("commonPkg", generatorConfig.getCommonPackage());
         return globalCustomMap;
     }
 
@@ -131,17 +136,17 @@ public class BatchGeneratorTests {
                 .fileOverride();
     }
 
-    private void getGlobalBuilder(GlobalConfig.Builder builder, CustomConfig customConfig) {
-        builder.author(customConfig.getAuthor())
-                .outputDir(customConfig.getJavaOutputDir())
+    private void getGlobalBuilder(GlobalConfig.Builder builder, GeneratorConfig generatorConfig) {
+        builder.author(generatorConfig.getAuthor())
+                .outputDir(generatorConfig.getJavaOutputDir())
                 .disableOpenDir();
     }
 
-    private void getPackageBuilder(PackageConfig.Builder builder, CustomConfig customConfig, String moduleName) {
+    private void getPackageBuilder(PackageConfig.Builder builder, GeneratorConfig generatorConfig, String moduleName) {
         Map<OutputFile, String> fileOutputDirMap =
-                Collections.singletonMap(OutputFile.xml, customConfig.getMapperXmlOutputDir());
+                Collections.singletonMap(OutputFile.xml, generatorConfig.getMapperXmlOutputDir());
 
-        builder.parent(customConfig.getBasePackage())
+        builder.parent(generatorConfig.getBasePackage())
                 .pathInfo(fileOutputDirMap)
                 .moduleName(moduleName); // 具体包名
     }

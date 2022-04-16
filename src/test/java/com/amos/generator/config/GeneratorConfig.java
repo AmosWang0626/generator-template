@@ -1,4 +1,4 @@
-package com.amos.generator.custom;
+package com.amos.generator.config;
 
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CustomConfig {
+public class GeneratorConfig {
 
     private static final String DEFAULT_DB_URL = "jdbc:mysql://localhost:3306/generator" +
             "?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
@@ -32,13 +32,13 @@ public class CustomConfig {
     /**
      * 基础包信息
      */
-    private String basePackage = "com.amos.generator.biz";
+    private String basePackage;
 
 
     /**
      * common包信息
      */
-    private String commonPackage = "com.amos.generator.common";
+    private String commonPackage;
 
     /**
      * Java文件输出路径
@@ -49,5 +49,10 @@ public class CustomConfig {
      * Mapper.xml文件输出路径
      */
     private String mapperXmlOutputDir;
+
+    /**
+     * 要去掉的实体类的前缀
+     */
+    private String removeClassPrefix;
 
 }

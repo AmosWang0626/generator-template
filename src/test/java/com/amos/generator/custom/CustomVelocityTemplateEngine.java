@@ -20,7 +20,7 @@ public class CustomVelocityTemplateEngine extends VelocityTemplateEngine {
 
     private final Map<String, CustomTemplateInfo> customFileInfoMap;
 
-    CustomVelocityTemplateEngine(Map<String, CustomTemplateInfo> customFileInfoMap) {
+    public CustomVelocityTemplateEngine(Map<String, CustomTemplateInfo> customFileInfoMap) {
         this.customFileInfoMap = customFileInfoMap;
     }
 

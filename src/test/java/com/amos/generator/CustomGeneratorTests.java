@@ -1,53 +1,58 @@
-package com.amos.generator.custom;
+package com.amos.generator;
 
 import com.amos.generator.common.model.BaseDO;
+import com.amos.generator.config.GeneratorConfig;
+import com.amos.generator.custom.CustomTemplateInfo;
+import com.amos.generator.custom.CustomVelocityTemplateEngine;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 一堆自定义测试方法
  *
  * @author amoswang
  */
-public class CustomModelTests {
+public class CustomGeneratorTests {
 
     /**
      * 初始化
      */
-    private CustomConfig init() {
-        CustomConfig customConfig = new CustomConfig();
+    private GeneratorConfig init() {
+        GeneratorConfig generatorConfig = new GeneratorConfig();
 
         String currentProjectDir = System.getProperty("user.dir");
+        generatorConfig.setJavaOutputDir(currentProjectDir + "/src/main/java");
+        generatorConfig.setMapperXmlOutputDir(currentProjectDir + "/src/main/resources/mapper");
 
-        customConfig.setJavaOutputDir(currentProjectDir + "/src/main/java");
-        customConfig.setMapperXmlOutputDir(currentProjectDir + "/src/main/resources/mapper");
+        generatorConfig.setBasePackage("com.amos.generator.biz");
+        generatorConfig.setCommonPackage("com.amos.generator.common");
+        generatorConfig.setRemoveClassPrefix("auth");
 
-        return customConfig;
+        return generatorConfig;
     }
 
     @Test
     public void generate() {
-        CustomConfig customConfig = init();
+        GeneratorConfig generatorConfig = init();
 
         // 全局模板参数
-        Map<String, String> globalCustomParam = getGlobalCustomParam(customConfig);
+        Map<String, String> globalCustomParam = getGlobalCustomParam(generatorConfig);
 
         // 自定义生成文件
         Map<String, CustomTemplateInfo> customTemplateInfoMap = customTemplateInfo();
 
-        FastAutoGenerator.create(customConfig.getDbConfigBuilder())
+        FastAutoGenerator.create(generatorConfig.getDbConfigBuilder())
                 // 全局配置
-                .globalConfig(builder -> getGlobalBuilder(builder, customConfig))
+                .globalConfig(builder -> getGlobalBuilder(builder, generatorConfig))
                 // 包配置
-                .packageConfig(builder -> getPackageBuilder(builder, customConfig))
+                .packageConfig(builder -> getPackageBuilder(builder, generatorConfig))
                 // 策略配置
-                .strategyConfig(this::getStrategyConfigBuilder)
+                .strategyConfig(builder -> getStrategyConfigBuilder(builder, generatorConfig))
                 // 注入配置
                 .injectionConfig(builder -> getInjectionBuilder(builder, customTemplateInfoMap, globalCustomParam))
                 // 模板引擎配置，默认 VelocityTemplateEngine 可选模板引擎 BeetlTemplateEngine 或 FreemarkerTemplateEngine
@@ -55,9 +60,9 @@ public class CustomModelTests {
                 .execute();
     }
 
-    private Map<String, String> getGlobalCustomParam(CustomConfig customConfig) {
+    private Map<String, String> getGlobalCustomParam(GeneratorConfig generatorConfig) {
         Map<String, String> globalCustomMap = new HashMap<>();
-        globalCustomMap.put("commonPkg", customConfig.getCommonPackage());
+        globalCustomMap.put("commonPkg", generatorConfig.getCommonPackage());
         return globalCustomMap;
     }
 
@@ -111,21 +116,28 @@ public class CustomModelTests {
         builder.customMap(customMap).customFile(customFile).fileOverride();
     }
 
-    private void getGlobalBuilder(GlobalConfig.Builder builder, CustomConfig customConfig) {
-        builder.author(customConfig.getAuthor())
-                .outputDir(customConfig.getJavaOutputDir())
+    private void getGlobalBuilder(GlobalConfig.Builder builder, GeneratorConfig generatorConfig) {
+        builder.author(generatorConfig.getAuthor())
+                .outputDir(generatorConfig.getJavaOutputDir())
                 .disableOpenDir();
     }
 
-    private void getPackageBuilder(PackageConfig.Builder builder, CustomConfig customConfig) {
+    private void getPackageBuilder(PackageConfig.Builder builder, GeneratorConfig generatorConfig) {
         Map<OutputFile, String> fileOutputDirMap =
-                Collections.singletonMap(OutputFile.xml, customConfig.getMapperXmlOutputDir());
+                Collections.singletonMap(OutputFile.xml, generatorConfig.getMapperXmlOutputDir());
 
-        builder.parent(customConfig.getBasePackage()).pathInfo(fileOutputDirMap);
+        builder.parent(generatorConfig.getBasePackage()).pathInfo(fileOutputDirMap);
     }
 
-    private void getStrategyConfigBuilder(StrategyConfig.Builder builder) {
+
+    private void getStrategyConfigBuilder(StrategyConfig.Builder builder, GeneratorConfig generatorConfig) {
+        List<String> tablePrefixList = new ArrayList<>();
+        if (StringUtils.isNotBlank(generatorConfig.getRemoveClassPrefix())) {
+            tablePrefixList.add(generatorConfig.getRemoveClassPrefix());
+        }
+
         builder
+                .addTablePrefix(tablePrefixList)
                 .controllerBuilder().enableRestStyle().enableHyphenStyle().fileOverride()
                 .mapperBuilder().enableBaseColumnList().enableBaseResultMap().fileOverride()
                 // entity
