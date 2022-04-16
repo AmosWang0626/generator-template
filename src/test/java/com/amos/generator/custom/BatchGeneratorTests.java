@@ -121,7 +121,14 @@ public class BatchGeneratorTests {
             }
         }
 
-        builder.customMap(customMap).customFile(customFile).fileOverride();
+        builder
+                .beforeOutputFile((tableInfo, objectMap) -> {
+                    String path = objectMap.get("controllerMappingHyphen").toString();
+                    objectMap.put("controllerMappingHyphen", path.replace("-do", ""));
+                })
+                .customMap(customMap)
+                .customFile(customFile)
+                .fileOverride();
     }
 
     private void getGlobalBuilder(GlobalConfig.Builder builder, CustomConfig customConfig) {
