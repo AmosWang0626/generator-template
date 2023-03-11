@@ -12,15 +12,15 @@
 
 #### 生成的Controller代码
 
-<img src="/image/mybaits-plus/generator-controller.png" width="500" alt="generator-controller" />
+<img src="/image/mybatis-plus/generator-controller.png" width="500" alt="generator-controller" />
 
 #### 根据表名前缀批量生成并分包
 
-<img src="/image/mybaits-plus/generator-batch-package.jpg" width="500" alt="generator-batch-package" />
+<img src="/image/mybatis-plus/generator-batch-package.jpg" width="500" alt="generator-batch-package" />
 
 #### 生成的Converter代码
 
-<img src="/image/mybaits-plus/generator-converter.png" width="500" alt="generator-converter" />
+<img src="/image/mybatis-plus/generator-converter.png" width="500" alt="generator-converter" />
 
 ## 所有功能
 
